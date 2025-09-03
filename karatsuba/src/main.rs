@@ -20,19 +20,53 @@
 
 
 use std::cmp::max;
+use std::io;
 
 fn main() {
-    let x = vec![1,2,3,4];
-    let y = vec![5,6,7,8];
-
+    println!("");
+    println!("    Karatsuba Multiplication Algorithm    ");
+    println!("Enter two large numbers to multiply:");
+    println!("");
+    
+    println!("Enter first number:");
+    let mut input1 = String::new();
+    io::stdin().read_line(&mut input1).expect("Failed to read input");
+    let x = string_to_vec(input1.trim());
+    
+    println!("Enter second number:");
+    let mut input2 = String::new();
+    io::stdin().read_line(&mut input2).expect("Failed to read input");
+    let y = string_to_vec(input2.trim());
+    
+    if x.is_empty() || y.is_empty() {
+        println!("Invalid input! Please enter valid numbers.");
+        return;
+    }
+    
+    println!("Computing {} * {} using Karatsuba algorithm...", 
+             vec_to_number(&x), vec_to_number(&y));
+    println!("");
+    
     let result = karatsuba(&x, &y);
-    println!("1234 * 5678 = {}", vec_to_number(&result));
+    println!("Result: {}", vec_to_number(&result));
+    
 
-    let x2 = vec![9,9];
-    let y2 = vec![9,9];
-    let result2 = karatsuba(&x2, &y2);
-    println!("99 * 99 = {}", vec_to_number(&result2));
 }
+
+
+fn string_to_vec(s: &str) -> Vec<u32> {
+    let clean_string: String = s.chars().filter(|c| c.is_ascii_digit()).collect();
+    
+    if clean_string.is_empty() {
+        return Vec::new(); 
+    }
+    
+    clean_string
+        .chars()
+        .map(|c| c.to_digit(10).unwrap())
+        .collect()
+}
+
 
 fn karatsuba(x: &Vec<u32>, y: &Vec<u32>) -> Vec<u32> {
     let max_len = max(x.len(), y.len());
@@ -43,6 +77,7 @@ fn karatsuba(x: &Vec<u32>, y: &Vec<u32>) -> Vec<u32> {
 
     karatsuba_internal(&x_padded, &y_padded)
 }
+
 
 fn karatsuba_internal(x: &Vec<u32>, y: &Vec<u32>) -> Vec<u32> {
     let n = x.len();
@@ -101,6 +136,7 @@ fn add_numbers(a: &Vec<u32>, b: &Vec<u32>) -> Vec<u32> {
     result.reverse();
     remove_leading_zeros(result)
 }
+
 fn subtract_numbers(a: &Vec<u32>, b: &Vec<u32>) -> Vec<u32> {
     if is_smaller(a, b) {
         return vec![0];
